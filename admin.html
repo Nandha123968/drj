@@ -1,0 +1,1328 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Admin & Clinical Portal | MANI PHYSIOTHERAPY AND REHABILITATION CENTRE</title>
+<!-- Bootstrap 5 CSS & Bootstrap Icons -->
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header class="site-header">
+  <nav class="nav container">
+    <a class="brand" href="index.html">
+      <img class="brand-logo" src="clinic-logo.jpg" alt="Logo">
+      <div class="brand-text">
+        <span class="brand-name">MANI <b>PHYSIOTHERAPY</b></span>
+        <span class="brand-sub">Doctor Portal & Admin Panel</span>
+      </div>
+    </a>
+    <div class="nav-links">
+      <a href="index.html">← Back to Main Website</a>
+    </div>
+  </nav>
+</header>
+
+<main class="container" style="padding:40px 0 90px">
+
+  <!-- Login Card -->
+  <div id="loginBox" class="form-card" style="max-width:400px;margin:50px auto">
+    <span class="eyebrow">DOCTOR & CLINIC ACCESS</span>
+    <h2 style="margin:8px 0 20px">Clinician Login</h2>
+    <label>Password
+      <input id="passInput" type="password" placeholder="Enter admin password">
+    </label>
+    <button id="loginBtn" class="btn primary full" style="margin-top:18px">Login to Dashboard</button>
+    <p id="loginError" class="tiny" style="color:#dc2626;display:none;margin-top:10px;font-weight:700">
+      Incorrect password. Try again.
+    </p>
+  </div>
+
+  <!-- Admin Panel Dashboard -->
+  <div id="panel" style="display:none">
+    <!-- Tab Navigation -->
+    <div class="admin-tab-nav">
+      <button id="tabBookingsBtn" class="admin-tab-btn active">
+        <i class="bi bi-calendar2-check"></i> 📋 Patient Consultations & Slips
+      </button>
+      <button id="tabGalleryBtn" class="admin-tab-btn">
+        <i class="bi bi-images"></i> 🖼️ Website Gallery & Photos Manager
+      </button>
+    </div>
+
+    <!-- TAB 1: CONSULTATIONS & BOOKINGS SECTION -->
+    <div id="bookingsSection">
+      <div class="section-head" style="margin-bottom:24px">
+        <span class="eyebrow">MANI PHYSIO • CLINICAL DASHBOARD</span>
+        <h2>Patient Consultations & Intake Slips</h2>
+        <p>View appointment requests, generate official prescriptions, dispatch WhatsApp communications, and send 5-Star Google Review invitations.</p>
+      </div>
+
+    <!-- Clinical KPI Stat Cards -->
+    <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(200px, 1fr));gap:16px;margin-bottom:24px">
+      <div style="background:#fff;border:1px solid #d4ecef;border-radius:14px;padding:16px 20px;box-shadow:var(--shadow-sm)">
+        <span style="font-size:12px;font-weight:700;color:var(--text-muted);text-transform:uppercase;letter-spacing:0.05em">Total Appointments</span>
+        <div id="statTotal" style="font-size:28px;font-weight:850;color:var(--teal-dark);margin-top:4px">0</div>
+      </div>
+      <div style="background:#fff;border:1px solid #d4ecef;border-radius:14px;padding:16px 20px;box-shadow:var(--shadow-sm)">
+        <span style="font-size:12px;font-weight:700;color:var(--primary);text-transform:uppercase;letter-spacing:0.05em">New / Booked</span>
+        <div id="statBooked" style="font-size:28px;font-weight:850;color:var(--primary);margin-top:4px">0</div>
+      </div>
+      <div style="background:#fff;border:1px solid #d4ecef;border-radius:14px;padding:16px 20px;box-shadow:var(--shadow-sm)">
+        <span style="font-size:12px;font-weight:700;color:#d97706;text-transform:uppercase;letter-spacing:0.05em">Contacted / In Care</span>
+        <div id="statContacted" style="font-size:28px;font-weight:850;color:#d97706;margin-top:4px">0</div>
+      </div>
+      <div style="background:#fff;border:1px solid #d4ecef;border-radius:14px;padding:16px 20px;box-shadow:var(--shadow-sm)">
+        <span style="font-size:12px;font-weight:700;color:#16a34a;text-transform:uppercase;letter-spacing:0.05em">Completed</span>
+        <div id="statCompleted" style="font-size:28px;font-weight:850;color:#16a34a;margin-top:4px">0</div>
+      </div>
+    </div>
+
+    <!-- Controls Bar -->
+    <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:22px;align-items:center">
+      <input id="searchBox" placeholder="🔍 Search patient name or mobile" style="max-width:280px;margin:0">
+      <select id="statusFilter" style="max-width:180px;margin:0">
+        <option value="">All Statuses</option>
+        <option value="Booked">Booked</option>
+        <option value="Paid">Paid</option>
+        <option value="Contacted">Contacted</option>
+        <option value="Completed">Completed</option>
+      </select>
+      <span style="flex:1"></span>
+      <button id="newRxBtn" class="btn primary">+ Write Prescription (Rx)</button>
+      <button id="exportBtn" class="btn secondary">Export CSV</button>
+      <button id="logoutBtn" class="btn secondary">Logout</button>
+    </div>
+
+      <!-- Bookings Table -->
+      <div id="bookingsWrap" style="overflow-x:auto">
+        <table id="bookingsTable" style="width:100%;border-collapse:collapse;background:#fff;border:1px solid #d4ecef;border-radius:14px;overflow:hidden">
+          <thead>
+            <tr style="background:#effafb;text-align:left;font-size:13px;color:var(--teal-dark)">
+              <th style="padding:12px">Apt ID / Name</th>
+              <th style="padding:12px">Age / Gender</th>
+              <th style="padding:12px">Phone</th>
+              <th style="padding:12px">Service Unit</th>
+              <th style="padding:12px">Date & Slot</th>
+              <th style="padding:12px">Status</th>
+              <th style="padding:12px">Actions & WhatsApp</th>
+            </tr>
+          </thead>
+          <tbody id="bookingsBody"></tbody>
+        </table>
+        <p id="emptyState" class="tiny" style="display:none;margin-top:20px;text-align:center">No bookings recorded yet.</p>
+      </div>
+    </div>
+
+    <!-- TAB 2: WEBSITE GALLERY & AWARDS MANAGER -->
+    <div id="gallerySection" style="display:none">
+      <div class="section-head" style="margin-bottom:20px">
+        <span class="eyebrow">WEBSITE MEDIA MANAGER</span>
+        <h2>Upload Photos to Website Gallery</h2>
+        <p>Upload certificates, awards, clinic facilities, or patient recovery pictures. All photos uploaded here automatically appear in the live website's <strong>Awards & Honors Gallery</strong>.</p>
+      </div>
+
+      <!-- Upload Form Card -->
+      <div class="form-card" style="max-width:700px;margin-bottom:30px">
+        <h4 style="margin:0 0 14px;color:var(--teal-dark)">Add New Photo to Live Website</h4>
+        
+        <!-- Firebase Auth Status Banner -->
+        <div id="fbSignedInBanner" style="margin-bottom:16px;padding:10px 14px;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:10px;font-size:12.5px;display:none;justify-content:space-between;align-items:center;">
+          <span style="color:#166534">🟢 <b>Cloud Synced:</b> Signed in as <b id="fbUserEmailText"></b> (photos publish live to website)</span>
+          <button id="fbSignOutBtn" type="button" class="btn sm" style="font-size:11px;padding:3px 10px;background:#fee2e2;color:#991b1b;border:1px solid #fecaca;border-radius:6px;cursor:pointer">Sign Out</button>
+        </div>
+
+        <div id="fbAuthBanner" style="margin-bottom:16px;padding:12px 14px;background:#fffbeb;border:1px solid #fde68a;border-radius:10px;font-size:13px;">
+          <div style="font-weight:700;color:#92400e;margin-bottom:8px">🔐 Firebase Cloud Access (Required to publish live photos)</div>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center;">
+            <input id="fbEmailInput" type="email" placeholder="Firebase Admin Email" style="flex:1;min-width:180px;padding:8px 12px;font-size:13px;border-radius:8px;border:1px solid var(--border)">
+            <input id="fbPassInput" type="password" placeholder="Firebase Password" style="flex:1;min-width:140px;padding:8px 12px;font-size:13px;border-radius:8px;border:1px solid var(--border)">
+            <button id="fbSignInBtn" type="button" class="btn primary" style="padding:8px 18px;font-size:13px;border-radius:8px">Connect Cloud</button>
+          </div>
+          <div id="fbAuthMsg" style="font-size:12px;margin-top:8px;display:none"></div>
+        </div>
+        
+        <div class="form-row">
+          <label>Photo Caption / Title *
+            <input id="galleryTitle" placeholder="e.g. Best Speaker Award 2026 / Clinical Conference">
+          </label>
+          <label>Category / Tag *
+            <input id="galleryCategory" type="text" placeholder="e.g. Awards & Honors / Medical Camp / Clinic" value="Awards & Honors" list="categorySuggestions" autocomplete="off">
+            <datalist id="categorySuggestions">
+              <option value="Awards & Honors">
+              <option value="Clinic Facility">
+              <option value="Patient Recovery">
+              <option value="Ergonomics & Lectures">
+              <option value="Medical Camp">
+              <option value="Clinical Photo">
+            </datalist>
+          </label>
+        </div>
+
+        <label>Select Image File (JPG, PNG, WebP) *
+          <input type="file" id="galleryFileInput" accept="image/*" style="padding:8px">
+        </label>
+
+        <!-- Live Preview Box: shows exactly how it will look in the website grid -->
+        <div id="galleryPreviewBox" style="display:none;margin:12px 0;background:#f4fbfa;border:1.5px dashed var(--border);border-radius:12px;padding:12px">
+          <div style="font-size:12px;font-weight:700;color:var(--teal-dark);margin-bottom:8px">👁️ Website Preview (how it will appear in the gallery grid)</div>
+          <figure style="margin:0 auto;max-width:260px;background:#fff;border:1px solid var(--border);border-radius:18px;overflow:hidden;box-shadow:var(--shadow-sm)">
+            <img id="galleryPreviewImg" alt="Preview" style="width:100%;height:270px;object-fit:contain;background:#f1f8f9;display:block">
+            <figcaption style="padding:14px 16px;font-size:13px;font-weight:700;color:var(--teal-dark);line-height:1.35">
+              <span id="galleryPreviewCat" class="badge bg-primary text-white me-1" style="font-size:10px;vertical-align:middle"></span>
+              <span id="galleryPreviewCaption"></span>
+            </figcaption>
+          </figure>
+          <div style="font-size:12px;color:var(--text-muted);margin-top:8px;text-align:center" id="galleryPreviewInfo"></div>
+        </div>
+
+        <button id="uploadGalleryBtn" class="btn primary full" style="margin-top:10px">
+          🚀 Upload & Publish to Website Gallery
+        </button>
+      </div>
+
+      <!-- Existing Uploaded Gallery Grid -->
+      <div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+          <h4 style="margin:0;color:var(--teal-dark)">Active Gallery Photos on Website</h4>
+          <span id="galleryCountBadge" class="badge bg-primary" style="font-size:12px">0 Uploaded</span>
+        </div>
+        <div id="adminGalleryGrid" class="admin-gallery-grid"></div>
+        <p id="emptyGalleryState" class="tiny" style="display:none;margin-top:20px;text-align:center">No custom images uploaded yet. The default clinic awards are currently active.</p>
+      </div>
+    </div>
+  </div>
+
+</main>
+
+<!-- PRESCRIPTION MODAL DIALOG -->
+<div id="rxModal" class="modal" aria-hidden="true">
+  <div class="modal-card" style="width:min(620px,100%)">
+    <button class="close" id="closeRxModal" aria-label="Close">×</button>
+    <span class="eyebrow">OFFICIAL PRESCRIPTION GENERATOR</span>
+    <h2 style="margin:8px 0 16px">Write Clinical Prescription</h2>
+    
+    <div class="form-row">
+      <label>Patient Name *
+        <input id="rxName" placeholder="Patient full name">
+      </label>
+      <label>Age
+        <input id="rxAge" type="number" min="1" max="120" placeholder="e.g. 42">
+      </label>
+    </div>
+
+    <div class="form-row">
+      <label>Gender
+        <select id="rxGender">
+          <option value="">Select</option>
+          <option>Male</option>
+          <option>Female</option>
+          <option>Other</option>
+        </select>
+      </label>
+      <label>Mobile Number (WhatsApp) *
+        <input id="rxPhone" type="tel" pattern="[6-9][0-9]{9}" maxlength="10" placeholder="10-digit mobile number">
+      </label>
+    </div>
+
+    <label>Prescription Date *
+      <input id="rxDate" type="text" placeholder="DD/MM/YYYY (e.g. 20/10/2026)" autocomplete="off">
+    </label>
+
+    <!-- Quick Clinical Exercise Protocols -->
+    <div style="margin:14px 0 8px">
+      <span style="font-size:11.5px;font-weight:750;color:var(--teal-dark);display:block;margin-bottom:6px">
+        ⚡ Quick Insert Clinical Protocol:
+      </span>
+      <div style="display:flex;flex-wrap:wrap;gap:6px">
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="orthoSpine">🦴 1. Ortho & Spine</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="neuroStroke">🧠 2. Neuro & Stroke</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="womensWellness">🌸 3. Women's Wellness & Postnatal</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="fitnessTransition">🏃 4. Fitness Transition</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="workplaceErgo">💼 5. Workplace Ergonomics</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="homePhysio">🏠 6. Home Physiotherapy</button>
+        <button type="button" class="btn secondary sm quick-protocol" data-protocol="patientEdu">📖 7. Patient Education</button>
+      </div>
+    </div>
+
+    <label>Prescription & Exercise Details
+      <textarea id="rxDetails" rows="9" placeholder="Enter clinical assessment, therapeutic exercises, repetitions, modalities applied, and home guidelines..."></textarea>
+    </label>
+
+    <!-- Invoice / Bill Receipt (uses patient name, phone & date above) -->
+    <div style="margin-top:18px;padding:14px;border:1px dashed var(--teal-dark);border-radius:10px">
+      <span style="font-size:12px;font-weight:750;color:var(--teal-dark);display:block;margin-bottom:8px">🧾 Invoice / Bill Receipt</span>
+      <div style="display:flex;gap:10px;flex-wrap:wrap">
+        <label style="flex:2;min-width:180px">Service
+          <input id="invService" type="text" placeholder="e.g. Physiotherapy Session" value="Physiotherapy Session">
+        </label>
+        <label style="flex:0.6;min-width:70px">Qty
+          <input id="invQty" type="number" min="1" value="1">
+        </label>
+        <label style="flex:1;min-width:100px">Rate (₹)
+          <input id="invRate" type="number" min="0" placeholder="500">
+        </label>
+        <label style="flex:1;min-width:110px">Payment
+          <select id="invMode"><option>Cash</option><option>UPI</option><option>Card</option></select>
+        </label>
+      </div>
+      <button id="invDownload" class="btn secondary" style="margin-top:10px;width:100%">🧾 Download Invoice PDF</button>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:14px;flex-wrap:wrap">
+      <button id="rxPreview" class="btn secondary" style="flex:1">👁️ Preview PDF</button>
+      <button id="rxDownload" class="btn secondary" style="flex:1">📥 Download Official PDF</button>
+      <button id="rxSend" class="btn primary" style="flex:1.2">📱 Send to Patient on WhatsApp</button>
+    </div>
+
+    <p class="tiny" style="margin-top:12px;color:var(--text-muted)">
+      Note: Generates prescription formatted onto the official clinic letterhead. "Send to Patient" opens WhatsApp with patient details, exercise summary, and Google 5-Star review link.
+    </p>
+  </div>
+</div>
+
+<footer>
+  <div class="container footer" style="display:flex;justify-content:space-between;align-items:center">
+    <div>
+      <b>MANI PHYSIOTHERAPY AND REHABILITATION CENTRE</b>
+      <p style="margin:4px 0;font-size:12px;color:#a8cdd1">Compassionate Care. Clinical Excellence.</p>
+    </div>
+    <div style="font-size:12px;color:#a8cdd1">
+      Senior Consultant: Dr. C. Jayachitra Manikandan, P.T.
+    </div>
+  </div>
+</footer>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="prescription-template-data.js"></script>
+<script type="module" src="firebase-gallery.js"></script>
+<script>
+// Password & Clinic Configuration
+const VALID_PASSWORDS = ["wellfare2026", "mani2026", "admin2026", "admin"];
+const CLINIC_COUNTRY_CODE = "91";
+const GOOGLE_REVIEW_LINK = "https://maps.app.goo.gl/bxTsAGo42B9ArvuMA?g_st=aw";
+
+const loginBox = document.getElementById("loginBox");
+const panel = document.getElementById("panel");
+const passInput = document.getElementById("passInput");
+const loginBtn = document.getElementById("loginBtn");
+const loginError = document.getElementById("loginError");
+const bookingsBody = document.getElementById("bookingsBody");
+const emptyState = document.getElementById("emptyState");
+const searchBox = document.getElementById("searchBox");
+const statusFilter = document.getElementById("statusFilter");
+
+function checkLogin(){
+  if(sessionStorage.getItem("wwAdminLoggedIn") === "yes"){
+    loginBox.style.display = "none";
+    panel.style.display = "block";
+    renderBookings();
+    renderAdminGallery();
+  }
+}
+
+loginBtn.addEventListener("click", attemptLogin);
+passInput.addEventListener("keydown", e => { if(e.key === "Enter") attemptLogin(); });
+
+function attemptLogin(){
+  const entered = passInput.value.trim();
+  if(VALID_PASSWORDS.includes(entered)){
+    sessionStorage.setItem("wwAdminLoggedIn", "yes");
+    loginError.style.display = "none";
+    checkLogin();
+  } else {
+    loginError.style.display = "block";
+  }
+}
+
+document.getElementById("logoutBtn").addEventListener("click", () => {
+  sessionStorage.removeItem("wwAdminLoggedIn");
+  location.reload();
+});
+
+const STORAGE_KEY = "maniPhysioBookings";
+const LEGACY_STORAGE_KEY = "womenWelfareBookings";
+
+function getBookings(){
+  const modern = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+  const legacy = JSON.parse(localStorage.getItem(LEGACY_STORAGE_KEY) || "null");
+  if(Array.isArray(modern) && modern.length) return modern;
+  if(Array.isArray(legacy) && legacy.length){
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(legacy));
+    return legacy;
+  }
+  return [];
+}
+function saveBookings(list){
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(list));
+  localStorage.setItem(LEGACY_STORAGE_KEY, JSON.stringify(list));
+}
+
+function escapeHtml(str) {
+  if(!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
+function waBookingLink(phone, name, service, date){
+  const digits = (phone || "").replace(/\D/g,"");
+  const full = digits.length === 10 ? CLINIC_COUNTRY_CODE + digits : digits;
+  const text = encodeURIComponent(`Hello ${name}, this is Dr. Jayachitra Manikandan from MANI PHYSIOTHERAPY CENTRE regarding your appointment for ${service} on ${date}.`);
+  return `https://wa.me/${full}?text=${text}`;
+}
+
+function waReviewLink(phone, name){
+  const digits = (phone || "").replace(/\D/g,"");
+  const full = digits.length === 10 ? CLINIC_COUNTRY_CODE + digits : digits;
+  const text = encodeURIComponent(
+    `Dear ${name},\n\nThank you for choosing MANI PHYSIOTHERAPY AND REHABILITATION CENTRE! We hope your treatment with Dr. Jayachitra Manikandan helped you.\n\nCould you please take 30 seconds to leave us a 5-Star review on Google? Your feedback helps other patients in pain discover safe care:\n\n⭐⭐⭐⭐⭐ ${GOOGLE_REVIEW_LINK}\n\nWishing you continued good health!`
+  );
+  return `https://wa.me/${full}?text=${text}`;
+}
+
+function updateStats(allList) {
+  const statTotal = document.getElementById("statTotal");
+  const statBooked = document.getElementById("statBooked");
+  const statContacted = document.getElementById("statContacted");
+  const statCompleted = document.getElementById("statCompleted");
+  if(!statTotal) return;
+
+  statTotal.textContent = allList.length;
+  statBooked.textContent = allList.filter(b => (b.status || "Booked") === "Booked").length;
+  statContacted.textContent = allList.filter(b => b.status === "Contacted" || b.status === "Paid").length;
+  statCompleted.textContent = allList.filter(b => b.status === "Completed").length;
+}
+
+function renderBookings(){
+  const allList = getBookings();
+  updateStats(allList);
+
+  let list = [...allList].sort((a,b) => (b.id||0) - (a.id||0));
+  const q = searchBox.value.trim().toLowerCase();
+  const statusQ = statusFilter.value;
+  if(q) list = list.filter(b => (b.name||"").toLowerCase().includes(q) || (b.phone||"").includes(q) || (b.notes||"").toLowerCase().includes(q));
+  if(statusQ) list = list.filter(b => (b.status||"Booked") === statusQ);
+
+  bookingsBody.innerHTML = "";
+  emptyState.style.display = list.length ? "none" : "block";
+
+  list.forEach(b => {
+    const tr = document.createElement("tr");
+    tr.style.borderTop = "1px solid #e5f1f2";
+    const noteHtml = b.notes ? `<div style="margin-top:6px;font-size:11.5px;color:#0e3f46;background:#f0fafb;border-left:3px solid var(--primary);padding:4px 8px;border-radius:4px;line-height:1.4"><b style="color:var(--primary)">Complaint:</b> ${escapeHtml(b.notes)}</div>` : "";
+
+    tr.innerHTML = `
+      <td style="padding:12px;vertical-align:top">
+        <span style="font-weight:700;color:var(--teal-dark)">${escapeHtml(b.name||"Patient")}</span>
+        <div style="font-size:11px;color:var(--primary);font-weight:700">${escapeHtml(b.appointmentId || "MPT-ID")}</div>
+        ${noteHtml}
+      </td>
+      <td style="padding:12px;font-size:13px;vertical-align:top">${escapeHtml(b.age||"-")} / ${escapeHtml(b.gender||"-")}</td>
+      <td style="padding:12px;font-size:13px;vertical-align:top">
+        <a href="tel:${escapeHtml(b.phone||"")}" style="color:var(--primary);text-decoration:none;font-weight:600">${escapeHtml(b.phone||"-")}</a>
+      </td>
+      <td style="padding:12px;font-size:12.5px;max-width:200px;vertical-align:top">
+        <div style="font-weight:600;color:var(--text-main)">${escapeHtml(b.service||"-")}</div>
+      </td>
+      <td style="padding:12px;font-size:12.5px;vertical-align:top">
+        <b>${escapeHtml(b.date||"-")}</b>
+        <small style="display:block;color:#7b8e93;margin-top:2px">${escapeHtml(b.timeSlot||"")}</small>
+      </td>
+      <td style="padding:12px;vertical-align:top">
+        <select data-id="${b.id}" class="statusSelect" style="margin:0;padding:5px 8px;font-size:12px;border-radius:6px;font-weight:600">
+          <option ${b.status==="Booked"?"selected":""}>Booked</option>
+          <option ${b.status==="Paid"?"selected":""}>Paid</option>
+          <option ${b.status==="Contacted"?"selected":""}>Contacted</option>
+          <option ${b.status==="Completed"?"selected":""}>Completed</option>
+        </select>
+      </td>
+      <td style="padding:12px;display:flex;gap:6px;flex-wrap:wrap;vertical-align:top">
+        <a class="btn primary sm" target="_blank" href="${waBookingLink(b.phone,b.name,b.service,b.date)}" title="Message on WhatsApp">Chat</a>
+        <button class="btn secondary sm rxFromRow" data-name="${escapeHtml(b.name||"")}" data-age="${escapeHtml(b.age||"")}" data-phone="${escapeHtml(b.phone||"")}" data-gender="${escapeHtml(b.gender||"")}" data-service="${escapeHtml(b.service||"")}" data-notes="${escapeHtml(b.notes||"")}" data-date="${escapeHtml(b.date||"")}" title="Open Prescription Writer">+ Rx</button>
+        <a class="btn gold sm" target="_blank" href="${waReviewLink(b.phone,b.name)}" title="Send 5-Star Google Review invite on WhatsApp">⭐ Review</a>
+        <button class="btn sm deleteBookingBtn" data-id="${b.id}" style="background:#fee2e2;color:#b91c1c;border-color:#fecaca;padding:5px 9px" title="Delete Booking">🗑️</button>
+      </td>
+    `;
+    bookingsBody.appendChild(tr);
+  });
+
+  document.querySelectorAll(".statusSelect").forEach(sel => {
+    sel.addEventListener("change", () => {
+      const id = Number(sel.dataset.id);
+      const list = getBookings();
+      const item = list.find(b => b.id === id);
+      if(item){
+        item.status = sel.value;
+        saveBookings(list);
+        updateStats(list);
+      }
+    });
+  });
+
+  document.querySelectorAll(".deleteBookingBtn").forEach(btn => {
+    btn.addEventListener("click", () => {
+      const id = Number(btn.dataset.id);
+      if(confirm("Are you sure you want to delete this consultation entry?")){
+        let list = getBookings().filter(b => b.id !== id);
+        saveBookings(list);
+        renderBookings();
+      }
+    });
+  });
+}
+
+searchBox.addEventListener("input", renderBookings);
+statusFilter.addEventListener("change", renderBookings);
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+  const list = getBookings();
+  if(!list.length){ alert("No bookings to export."); return; }
+  const headers = ["AppointmentID","Name","Age","Gender","Phone","Service","Date","TimeSlot","Notes","Status","SubmittedAt"];
+  const rows = list.map(b => [b.appointmentId||"",b.name||"",b.age||"",b.gender||"",b.phone||"",b.service||"",b.date||"",b.timeSlot||"",b.notes||"",b.status||"",b.submittedAt||""]);
+  const csv = [headers, ...rows].map(r => r.map(v => `"${String(v??"").replace(/"/g,'""')}"`).join(",")).join("\n");
+  const blob = new Blob([csv], {type:"text/csv"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "MANI_Physio_Bookings.csv";
+  a.click();
+});
+
+// Prescription Modal Logic
+const rxModal = document.getElementById("rxModal");
+const rxName = document.getElementById("rxName");
+const rxAge = document.getElementById("rxAge");
+const rxPhone = document.getElementById("rxPhone");
+const rxGender = document.getElementById("rxGender");
+const rxDetails = document.getElementById("rxDetails");
+const rxDate = document.getElementById("rxDate");
+
+const serviceToProtocolKey = {
+  "Orthopaedic Physiotherapy & Spine Care": "orthoSpine",
+  "Neurological & Stroke Rehabilitation": "neuroStroke",
+  "Women's Wellness & Physiotherapy (Antenatal, Postnatal & Postural Care)": "womensWellness",
+  "Women's Wellness & Physiotherapy (Antenatal & Postnatal Care, Postural Care)": "womensWellness",
+  "Fitness & Wellness Transition": "fitnessTransition",
+  "Workplace Ergonomics & Corporate Health": "workplaceErgo",
+  "Home Physiotherapy & Rehabilitation": "homePhysio",
+  "Patient Education & Counseling": "patientEdu"
+};
+
+function openRxModal(prefill){
+  rxName.value = prefill?.name || "";
+  rxAge.value = prefill?.age || "";
+  rxGender.value = prefill?.gender || "";
+  rxPhone.value = prefill?.phone || "";
+  
+  let details = "";
+  if(prefill?.notes){
+    details += `PRIMARY COMPLAINTS / SYMPTOMS:\n${prefill.notes}\n\n`;
+  }
+  const protoKey = serviceToProtocolKey[prefill?.service];
+  if(protoKey && clinicalProtocols[protoKey]){
+    details += clinicalProtocols[protoKey];
+  }
+  rxDetails.value = details;
+
+  // Auto-fill booking date or today's date in DD/MM/YYYY
+  if (prefill?.date) {
+    rxDate.value = prefill.date;
+  } else {
+    const today = new Date();
+    const dd = String(today.getDate()).padStart(2, '0');
+    const mm = String(today.getMonth() + 1).padStart(2, '0');
+    const yyyy = today.getFullYear();
+    rxDate.value = `${dd}/${mm}/${yyyy}`;
+  }
+  rxModal.classList.add("show");
+  rxModal.setAttribute("aria-hidden","false");
+}
+
+document.getElementById("newRxBtn").addEventListener("click", () => openRxModal());
+document.getElementById("closeRxModal").addEventListener("click", () => {
+  rxModal.classList.remove("show");
+  rxModal.setAttribute("aria-hidden","true");
+});
+rxModal.addEventListener("click", e => { if(e.target === rxModal) document.getElementById("closeRxModal").click(); });
+
+bookingsBody.addEventListener("click", e => {
+  const btn = e.target.closest(".rxFromRow");
+  if(!btn) return;
+  openRxModal({
+    name: btn.dataset.name,
+    age: btn.dataset.age,
+    phone: btn.dataset.phone,
+    gender: btn.dataset.gender,
+    service: btn.dataset.service,
+    notes: btn.dataset.notes,
+    date: btn.dataset.date
+  });
+});
+
+// Quick Clinical Protocol Templates (Streamlined for selected treatment)
+const clinicalProtocols = {
+  orthoSpine: "CLINICAL CARE: Orthopaedic Physiotherapy & Spine Care\n\nPrescribed Protocol:\n• Spinal Decompression & McKenzie Postural Protocol\n• Core & Paraspinal Isometric Stabilization Exercises\n• Targeted Joint Mobilization & Active Range of Motion\n• Lumbar Support & Ergonomic Postural Guidance",
+
+  neuroStroke: "CLINICAL CARE: Neurological & Stroke Rehabilitation\n\nPrescribed Protocol:\n• Neuro-Developmental Facilitation & Reciprocal Muscle Re-education\n• Functional Mobility & Safe Transfer Retraining (Sit-to-Stand)\n• Static & Dynamic Balance Retraining on Balance Board\n• Supervised Gait Synchronization & Fall Safety Protocol",
+
+  womensWellness: "CLINICAL CARE: Women's Wellness & Physiotherapy\n\nPrescribed Protocol:\n• Pelvic Floor Muscle Conditioning & Safe Core Co-contraction\n• Diastasis Recti Assessment & Gentle Abdominal Recovery\n• Maternal Ergonomics for Safe Baby Feeding & Carrying\n• Diaphragmatic Breathing for Pelvic & Spine Decompression",
+
+  fitnessTransition: "CLINICAL CARE: Fitness & Wellness Transition\n\nPrescribed Protocol:\n• Functional Movement Screen & Kinetic Chain Alignment\n• Graded Progressive Resistance & Functional Strength Plan\n• Core Stability & Postural Endurance Conditioning\n• Dynamic Warm-Up & Targeted Lower Limb Flexibility Routine",
+
+  workplaceErgo: "CLINICAL CARE: Workplace Ergonomics & Corporate Health\n\nPrescribed Protocol:\n• Workstation Ergonomic Setup (90-90-90 Neutral Alignment)\n• 2-Minute Micro-Break Decompression Stretches (every 45 mins)\n• Tech-Neck & Thoracic Spine Extension Exercises\n• Neutral Wrist Alignment for RSI & Carpal Tunnel Prevention",
+
+  homePhysio: "CLINICAL CARE: Home Physiotherapy & Rehabilitation\n\nPrescribed Protocol:\n• In-Home Functional Bed Mobility & Positioning Safety\n• Active-Assisted Joint Range of Motion & Circulation Exercises\n• Supervised Living Space Ambulation with Assistive Device\n• Caregiver Guidance for Safe Patient Transfers & Fall Hazard Reduction",
+
+  patientEdu: "CLINICAL CARE: Patient Education & Counseling\n\nPrescribed Protocol:\n• Spine & Joint Biomechanical Education (Root-Cause Explanation)\n• Joint Protection & Safe Body Mechanics in Daily Tasks\n• Activity Pacing & Gradual Reconditioning Strategy\n• Home Self-Care Blueprint & Scheduled Preventive Review"
+};
+
+document.querySelectorAll(".quick-protocol").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const protoKey = btn.dataset.protocol;
+    if(protoKey === "womensWellness" && rxGender.value === "Male"){
+      if(!confirm("⚠️ Note: Patient gender is set to 'Male'. Are you sure you want to apply Women's Wellness & Postnatal Protocol?")){
+        return;
+      }
+    }
+    if(clinicalProtocols[protoKey]){
+      if(rxDetails.value.trim()){
+        rxDetails.value += "\n\n" + clinicalProtocols[protoKey];
+      } else {
+        rxDetails.value = clinicalProtocols[protoKey];
+      }
+    }
+  });
+});
+
+function loadImageAsDataURL(src){
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => {
+      const canvas = document.createElement("canvas");
+      canvas.width = img.naturalWidth;
+      canvas.height = img.naturalHeight;
+      const ctx = canvas.getContext("2d");
+      ctx.drawImage(img, 0, 0);
+      try {
+        const mime = src.toLowerCase().endsWith(".png") ? "image/png" : "image/jpeg";
+        resolve(canvas.toDataURL(mime, 0.95));
+      }
+      catch(err){ reject(err); }
+    };
+    img.onerror = reject;
+    img.src = src;
+  });
+}
+
+async function buildPrescriptionPdf(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const W = doc.internal.pageSize.getWidth();   // 595
+  const H = doc.internal.pageSize.getHeight();  // 842
+  const NAVY = [9, 58, 91], TEAL = [8, 119, 131], DARK = [30, 41, 59], SOFT = [236, 247, 248], GREY = [100, 116, 139];
+  const M = 40;
+  const formatName = s => s.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+
+  let logo = null;
+  try { logo = await loadImageAsDataURL("clinic-logo.jpg"); } catch(e) { console.warn("Logo failed", e); }
+  let sig = window.DOCTOR_SIGNATURE_B64 || null;
+  if (!sig) { try { sig = await loadImageAsDataURL("doctor-signature.png"); } catch(e) {} }
+
+  function header(){
+    // Faint centered logo watermark
+    if (logo) {
+      try {
+        doc.saveGraphicsState();
+        doc.setGState(new doc.GState({ opacity: 0.06 }));
+        doc.addImage(logo, "JPEG", W / 2 - 150, H / 2 - 150, 300, 300);
+        doc.restoreGraphicsState();
+      } catch(e) {}
+    }
+    // Top bands + corner accent triangles
+    doc.setFillColor(...NAVY); doc.rect(0, 0, W, 8, "F");
+    doc.setFillColor(...TEAL); doc.rect(0, 8, W, 3, "F");
+    if (logo) { try { doc.addImage(logo, "JPEG", M, 26, 64, 64); } catch(e) {} }
+    const tx = logo ? M + 78 : M;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(19); doc.setTextColor(...NAVY);
+    doc.text("MANI PHYSIOTHERAPY", tx, 52);
+    doc.setFontSize(10); doc.setTextColor(...TEAL);
+    doc.text("AND REHABILITATION CENTRE", tx, 67);
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(...GREY);
+    doc.text("Compassionate Care. Clinical Excellence.", tx, 81);
+    // Right-side doctor block (right-aligned)
+    const rx = W - M;
+    doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(...NAVY);
+    doc.text("DR. C. JAYACHITRA MANIKANDAN, P.T.", rx, 34, { align: "right" });
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8); doc.setTextColor(...DARK);
+    doc.text("MAP, MPT (Ortho), PhD, MBA (HR),", rx, 47, { align: "right" });
+    doc.text("MBA (HSM), IOSH MS", rx, 58, { align: "right" });
+    doc.setFont("helvetica", "bold"); doc.setTextColor(...TEAL);
+    doc.text("Senior Consultant Physiotherapist,", rx, 71, { align: "right" });
+    doc.text("Rehab Specialist & Certified Workplace Ergonomist", rx, 82, { align: "right" });
+    // Double rule
+    doc.setDrawColor(...NAVY); doc.setLineWidth(1.2); doc.line(M, 104, W - M, 104);
+    doc.setDrawColor(...TEAL); doc.setLineWidth(0.5); doc.line(M, 107, W - M, 107);
+  }
+  function footer(){
+    doc.setFillColor(...NAVY); doc.rect(0, H - 46, W, 46, "F");
+    doc.setFillColor(...TEAL); doc.rect(0, H - 49, W, 3, "F");
+    doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(255);
+    doc.text("Guru Complex, Chennai - Trichy Hwy", W / 2, H - 28, { align: "center" });
+    doc.text("Ph: +91 73058 09477   |   jayachitra750@gmail.com   |   www.drjamprfit.com", W / 2, H - 15, { align: "center" });
+  }
+
+  header();
+
+  // Patient info card (2 x 2 aligned grid with divider)
+  const cardY = 120, cardH = 76;
+  const colL = M + 22, colR = W / 2 + 22;
+  doc.setFillColor(...SOFT); doc.roundedRect(M, cardY, W - 2 * M, cardH, 8, 8, "F");
+  doc.setDrawColor(...TEAL); doc.setLineWidth(0.6); doc.roundedRect(M, cardY, W - 2 * M, cardH, 8, 8, "S");
+  doc.setFillColor(...TEAL); doc.roundedRect(M, cardY, 6, cardH, 3, 3, "F");
+  doc.setDrawColor(...TEAL); doc.setLineWidth(0.3);
+  doc.line(W / 2, cardY + 10, W / 2, cardY + cardH - 10);       // vertical divider
+  doc.line(M + 16, cardY + cardH / 2, W - M - 16, cardY + cardH / 2); // horizontal divider
+  const label = (t, x, y) => { doc.setFont("helvetica", "bold"); doc.setFontSize(7.5); doc.setTextColor(...TEAL); doc.text(t, x, y); };
+  const value = (t, x, y) => { doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(...NAVY); doc.text(t || "-", x, y); };
+  const r1 = cardY + 15, r2 = cardY + cardH / 2 + 15; // label rows; values 13pt below
+  label("PATIENT NAME", colL, r1);
+  value(rxName.value.trim() ? formatName(rxName.value) : "-", colL, r1 + 14);
+  label("DATE", colR, r1);
+  let dateTxt = rxDate.value.trim() || "-";
+  if (rxDate.value) {
+    if (rxDate.value.includes("/")) {
+      const parts = rxDate.value.split("/");
+      if (parts.length === 3) dateTxt = `${parts[0]} / ${parts[1]} / ${parts[2]}`;
+    } else if (rxDate.value.includes("-")) {
+      const parts = rxDate.value.split("-");
+      if (parts.length === 3) {
+        if (parts[0].length === 4) dateTxt = `${parts[2]} / ${parts[1]} / ${parts[0]}`;
+        else dateTxt = `${parts[0]} / ${parts[1]} / ${parts[2]}`;
+      }
+    }
+  }
+  value(dateTxt, colR, r1 + 14);
+  label("AGE / GENDER", colL, r2);
+  value([rxAge.value ? `${rxAge.value} Yrs` : "", rxGender.value].filter(Boolean).join(" / "), colL, r2 + 14);
+  label("PHONE", colR, r2);
+  value(rxPhone.value.trim(), colR, r2 + 14);
+
+  // Rx badge (circle) + decorative rule with end dot
+  doc.setFillColor(...TEAL); doc.circle(M + 20, 228, 20, "F");
+  doc.setFillColor(...NAVY); doc.circle(M + 20, 228, 16.5, "F");
+  doc.setFont("times", "bolditalic"); doc.setFontSize(20); doc.setTextColor(255);
+  doc.text("Rx", M + 20, 235, { align: "center" });
+  doc.setDrawColor(...TEAL); doc.setLineWidth(1); doc.line(M + 46, 228, W - M - 6, 228);
+  doc.setFillColor(...TEAL); doc.circle(W - M - 3, 228, 3, "F");
+
+
+  // Body
+  const bodyMax = H - 190; // keep room for signature + footer
+  let y = 276;
+  const newPage = () => { footer(); doc.addPage(); header(); y = 128; };
+  const ensure = h => { if (y + h > H - 70) newPage(); };
+  const details = rxDetails.value.trim();
+  const maxW = W - 2 * M;
+  if (details) {
+    details.split("\n").forEach(raw => {
+      const line = raw.trim();
+      if (!line) { y += 8; return; }
+      if (line.startsWith("CLINICAL CARE:") || line.startsWith("CLINICAL ASSESSMENT:")) {
+        ensure(30);
+        doc.setFillColor(...NAVY); doc.roundedRect(M, y - 12, maxW, 20, 4, 4, "F");
+        doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(255);
+        doc.text(line, M + 10, y + 2); y += 26;
+      } else if (line.endsWith(":") || line.startsWith("Prescribed Protocol:")) {
+        ensure(24);
+        doc.setFont("helvetica", "bold"); doc.setFontSize(10.5); doc.setTextColor(...TEAL);
+        doc.text(line, M, y); 
+        doc.setDrawColor(...TEAL); doc.setLineWidth(0.4); doc.line(M, y + 3, M + Math.min(doc.getTextWidth(line), maxW), y + 3);
+        y += 18;
+      } else if (/^[•\-*]/.test(line)) {
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...DARK);
+        const t = doc.splitTextToSize(line.replace(/^[•\-*]\s*/, ""), maxW - 20);
+        ensure(t.length * 13 + 4);
+        doc.setFillColor(...TEAL); doc.circle(M + 6, y - 3, 2, "F");
+        doc.text(t, M + 16, y); y += t.length * 13 + 4;
+      } else {
+        doc.setFont("helvetica", "normal"); doc.setFontSize(10); doc.setTextColor(...DARK);
+        const t = doc.splitTextToSize(line, maxW);
+        ensure(t.length * 13 + 4);
+        doc.text(t, M, y); y += t.length * 13 + 4;
+      }
+    });
+  }
+
+  // Signature block on last page
+  ensure(100);
+  const sy = H - 120;
+  if (y > sy - 10) newPage();
+  const sw = 140, sh = sw * (597 / 698);
+  if (sig) { try { doc.addImage(sig, "PNG", W - M - sw - 10, sy - sh + 14, sw, sh); } catch(e) {} }
+  doc.setDrawColor(...NAVY); doc.setLineWidth(0.8); doc.line(W - M - 170, sy + 16, W - M, sy + 16);
+  doc.setFont("helvetica", "bold"); doc.setFontSize(10); doc.setTextColor(...NAVY);
+  doc.text("Dr. C. Jayachitra Manikandan, P.T.", W - M - 85, sy + 30, { align: "center" });
+  doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(...GREY);
+  doc.text("Senior Consultant Physiotherapist", W - M - 85, sy + 42, { align: "center" });
+
+  footer();
+
+  return doc;
+}
+
+async function buildPrescriptionPdfLegacy(){
+  const { jsPDF } = window.jspdf;
+  const doc = new jsPDF({ unit: "pt", format: "a4" });
+  const pageWidth = doc.internal.pageSize.getWidth();
+  const pageHeight = doc.internal.pageSize.getHeight();
+
+  let hasTemplate = false;
+  if (window.PRESCRIPTION_TEMPLATE_B64) {
+    try {
+      doc.addImage(window.PRESCRIPTION_TEMPLATE_B64, "JPEG", 0, 0, pageWidth, pageHeight);
+      hasTemplate = true;
+    } catch(e) {
+      console.warn("Could not draw embedded template:", e);
+    }
+  }
+
+  if (!hasTemplate) {
+    try {
+      const templateData = await loadImageAsDataURL("prescription-template.jpg");
+      doc.addImage(templateData, "JPEG", 0, 0, pageWidth, pageHeight);
+      hasTemplate = true;
+    } catch(e) {
+      console.error("Prescription template image failed to load; using vector fallback", e);
+    }
+  }
+
+  // Exact scale factors from 1080x1526 template to A4 page
+  const sX = pageWidth / 1080;
+  const sY = pageHeight / 1526;
+
+  const NAVY = [9, 58, 91];
+  const TEAL = [8, 119, 131];
+  const DARK = [20, 53, 61];
+
+  // Helper to format patient name with title case
+  const formatName = str => str.trim().split(/\s+/).map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+
+  // 1. Patient Name: sits perfectly on line y=348 (baseline at 343)
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(11);
+  doc.setTextColor(...NAVY);
+  if(rxName.value.trim()) {
+    doc.text(formatName(rxName.value), 225 * sX, 343 * sY);
+  }
+
+  // 2. Date: sits centered into Date slots: ___ / ___ / ______ (baseline at 343)
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  doc.setTextColor(...NAVY);
+  if(rxDate.value){
+    let dd = "", mm = "", yy = "";
+    if (rxDate.value.includes("/")) {
+      const p = rxDate.value.split("/");
+      if (p.length === 3) { dd = p[0]; mm = p[1]; yy = p[2]; }
+    } else if (rxDate.value.includes("-")) {
+      const p = rxDate.value.split("-");
+      if (p.length === 3) {
+        if (p[0].length === 4) { yy = p[0]; mm = p[1]; dd = p[2]; }
+        else { dd = p[0]; mm = p[1]; yy = p[2]; }
+      }
+    }
+    if(dd && mm && yy){
+      doc.text(dd, 827 * sX, 343 * sY, { align: "center" });
+      doc.text(mm, 897 * sX, 343 * sY, { align: "center" });
+      doc.text(yy, 987 * sX, 343 * sY, { align: "center" });
+    } else {
+      doc.text(rxDate.value, 827 * sX, 343 * sY);
+    }
+  }
+
+  // 3. Age / Gender: sits perfectly on line y=404 (baseline at 400)
+  doc.setFont("helvetica", "bold");
+  doc.setFontSize(10.5);
+  doc.setTextColor(...NAVY);
+  const ageGender = [rxAge.value ? `${rxAge.value} Yrs` : "", rxGender.value].filter(Boolean).join(" / ");
+  if(ageGender) {
+    doc.text(ageGender, 225 * sX, 400 * sY);
+  }
+
+  // 4. Phone No.: placed cleanly on line y=404 right after "Phone No. :" (baseline at 400)
+  if(rxPhone.value.trim()) {
+    doc.text(rxPhone.value.trim(), 852 * sX, 400 * sY);
+  }
+
+  // 5. Prescription Details: cleanly aligned with page margin (x=42), safely below Rx symbol (starts at 595 to clear Rx tail at 539)
+  const details = rxDetails.value.trim();
+  if(details){
+    const bodyX = 42 * sX;
+    let curY = 595 * sY;
+    const maxWidth = 996 * sX;
+
+    const rawBlocks = details.split("\n");
+    rawBlocks.forEach(rawLine => {
+      const line = rawLine.trim();
+      if(!line){
+        curY += 10 * sY;
+        return;
+      }
+
+      if(line.startsWith("CLINICAL CARE:") || line.startsWith("CLINICAL ASSESSMENT:")){
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(11);
+        doc.setTextColor(...NAVY);
+        doc.text(line, bodyX, curY);
+        curY += 20 * sY;
+      } else if(line.endsWith(":") || line.startsWith("Prescribed Protocol:")){
+        doc.setFont("helvetica", "bold");
+        doc.setFontSize(10.5);
+        doc.setTextColor(...TEAL);
+        doc.text(line, bodyX, curY);
+        curY += 17 * sY;
+      } else if(line.startsWith("•") || line.startsWith("-") || line.startsWith("*")){
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(...DARK);
+        const bulletLines = doc.splitTextToSize(line, maxWidth - 16 * sX);
+        doc.text(bulletLines, bodyX + 10 * sX, curY);
+        curY += (bulletLines.length * 13.5 + 4) * sY;
+      } else {
+        doc.setFont("helvetica", "normal");
+        doc.setFontSize(10);
+        doc.setTextColor(...DARK);
+        const wrapped = doc.splitTextToSize(line, maxWidth);
+        doc.text(wrapped, bodyX, curY);
+        curY += (wrapped.length * 13.5 + 4) * sY;
+      }
+    });
+  }
+
+  // 6. Doctor Signature: sits naturally touching line y=1324, centered over signature line (center=884)
+  const sigW = 175 * sX;
+  const sigH = (sigW * (597 / 698));
+  const sigX = (884 * sX) - (sigW / 2);
+  const sigY = (1324 * sY) - (sigH * 0.965);
+
+  if (window.DOCTOR_SIGNATURE_B64) {
+    try {
+      doc.addImage(window.DOCTOR_SIGNATURE_B64, "PNG", sigX, sigY, sigW, sigH);
+    } catch(e) {
+      console.warn("Could not draw embedded signature:", e);
+    }
+  } else {
+    try {
+      const sigData = await loadImageAsDataURL("doctor-signature.png");
+      doc.addImage(sigData, "PNG", sigX, sigY, sigW, sigH);
+    } catch(e) {
+      console.warn("Fallback signature failed:", e);
+    }
+  }
+
+  return doc;
+}
+
+function validateRx(){
+  if(!rxName.value.trim()){
+    alert("Please enter patient name.");
+    return false;
+  }
+  const cleanDigits = rxPhone.value.replace(/\D/g, "");
+  if(cleanDigits.length !== 10){
+    alert("Please enter a valid 10-digit mobile number (Current digits: " + cleanDigits.length + ").");
+    return false;
+  }
+  if(!rxDate.value){
+    alert("Please select prescription date.");
+    return false;
+  }
+  return true;
+}
+
+document.getElementById("invDownload").addEventListener("click", async () => {
+  const name = rxName.value.trim();
+  const rate = parseFloat(document.getElementById("invRate").value);
+  const qty = parseInt(document.getElementById("invQty").value) || 1;
+  if(!name || !rxDate.value || isNaN(rate)){ alert("Enter patient name, date and rate for the invoice."); return; }
+  const service = document.getElementById("invService").value.trim() || "Physiotherapy Session";
+  const mode = document.getElementById("invMode").value;
+  const total = rate * qty;
+  const invNo = "INV-" + rxDate.value.replace(/[\/\-\s]/g,"") + "-" + Math.floor(1000 + Math.random()*9000);
+
+  // Same letterhead, patient fields & signature as the prescription; bill goes in the body
+  const originalDetails = rxDetails.value;
+  rxDetails.value = [
+    "BILL RECEIPT:",
+    `Invoice No: ${invNo}`,
+    "",
+    "Service Details:",
+    `• ${service}`,
+    `• Quantity: ${qty}`,
+    `• Rate: Rs. ${rate.toFixed(2)}`,
+    "",
+    `CLINICAL CARE: TOTAL AMOUNT: Rs. ${total.toFixed(2)}`,
+    "",
+    "Payment Details:",
+    `• Payment Mode: ${mode}`,
+    "• Status: PAID",
+    "",
+    "Thank you for choosing MANI Physiotherapy. Wishing you a speedy recovery!"
+  ].join("\n");
+  try {
+    const doc = await buildPrescriptionPdf();
+    doc.save(`Invoice_${name.replace(/\s+/g,"_")}_${invNo}.pdf`);
+  } finally {
+    rxDetails.value = originalDetails;
+  }
+});
+
+document.getElementById("rxPreview").addEventListener("click", async () => {
+  if(!validateRx()) return;
+  const doc = await buildPrescriptionPdf();
+  window.open(doc.output("bloburl"), "_blank");
+});
+document.getElementById("rxDownload").addEventListener("click", async () => {
+  if(!validateRx()) return;
+  const doc = await buildPrescriptionPdf();
+  doc.save(`Prescription_${rxName.value.trim().replace(/\s+/g,"_")}.pdf`);
+});
+document.getElementById("rxSend").addEventListener("click", async () => {
+  if(!validateRx()) return;
+  const doc = await buildPrescriptionPdf();
+  const fileName = `Prescription_${rxName.value.trim().replace(/\s+/g,"_")}.pdf`;
+  const blob = doc.output("blob");
+  const file = new File([blob], fileName, { type: "application/pdf" });
+
+  const patientName = rxName.value.trim();
+  const patientPhone = rxPhone.value.trim();
+  const digits = patientPhone.replace(/\D/g,"");
+  const fullPhone = digits.length === 10 ? CLINIC_COUNTRY_CODE + digits : digits;
+
+  const waText = encodeURIComponent(
+    `Hello ${patientName},\n\nDr. C. Jayachitra Manikandan has issued your Official Physiotherapy Prescription & Exercise Protocol from MANI PHYSIOTHERAPY AND REHABILITATION CENTRE.\n\nPlease follow the prescribed exercises and precautions daily.\n\n⭐ Help others find healing: If you were happy with Dr. Jayachitra's care, please take 30 seconds to rate us 5-Stars on Google: ${GOOGLE_REVIEW_LINK}\n\nWishing you a speedy and complete recovery!`
+  );
+  const waUrl = `https://wa.me/${fullPhone}?text=${waText}`;
+
+  // If browser supports web share with file attachment:
+  if(navigator.canShare && navigator.canShare({ files: [file] })){
+    try {
+      await navigator.share({
+        files: [file],
+        title: "Prescription",
+        text: `Prescription for ${patientName} from MANI Physiotherapy Centre`
+      });
+      return;
+    } catch(err) {
+      if(err?.name === "AbortError") return;
+    }
+  }
+
+  // Desktop / standard fallback:
+  doc.save(fileName);
+  window.open(waUrl, "_blank");
+});
+
+// ================= GALLERY MANAGER LOGIC =================
+const tabBookingsBtn = document.getElementById("tabBookingsBtn");
+const tabGalleryBtn = document.getElementById("tabGalleryBtn");
+const bookingsSection = document.getElementById("bookingsSection");
+const gallerySection = document.getElementById("gallerySection");
+
+if(tabBookingsBtn && tabGalleryBtn && bookingsSection && gallerySection) {
+  tabBookingsBtn.addEventListener("click", () => {
+    tabBookingsBtn.classList.add("active");
+    tabGalleryBtn.classList.remove("active");
+    bookingsSection.style.display = "block";
+    gallerySection.style.display = "none";
+  });
+
+  tabGalleryBtn.addEventListener("click", () => {
+    tabGalleryBtn.classList.add("active");
+    tabBookingsBtn.classList.remove("active");
+    bookingsSection.style.display = "none";
+    gallerySection.style.display = "block";
+    renderAdminGallery();
+  });
+}
+
+const galleryFileInput = document.getElementById("galleryFileInput");
+const galleryTitle = document.getElementById("galleryTitle");
+const galleryCategory = document.getElementById("galleryCategory");
+const galleryPreviewBox = document.getElementById("galleryPreviewBox");
+const galleryPreviewImg = document.getElementById("galleryPreviewImg");
+const galleryPreviewInfo = document.getElementById("galleryPreviewInfo");
+const uploadGalleryBtn = document.getElementById("uploadGalleryBtn");
+const adminGalleryGrid = document.getElementById("adminGalleryGrid");
+const emptyGalleryState = document.getElementById("emptyGalleryState");
+const galleryCountBadge = document.getElementById("galleryCountBadge");
+
+let selectedGalleryDataUrl = null;
+
+function updateGalleryPreviewText() {
+  const cap = document.getElementById("galleryPreviewCaption");
+  const cat = document.getElementById("galleryPreviewCat");
+  if(cap) cap.textContent = galleryTitle.value.trim() || "MANI Physio Gallery";
+  if(cat) cat.textContent = galleryCategory.value.trim() || "Clinical Photo";
+}
+if(galleryTitle) galleryTitle.addEventListener("input", updateGalleryPreviewText);
+if(galleryCategory) galleryCategory.addEventListener("input", updateGalleryPreviewText);
+
+if(galleryFileInput) {
+  galleryFileInput.addEventListener("change", (e) => {
+    const file = e.target.files[0];
+    if(!file) return;
+
+    const reader = new FileReader();
+    reader.onload = (evt) => {
+      // Optimize & resize image on canvas to avoid blowing localStorage limits
+      const tempImg = new Image();
+      tempImg.onload = () => {
+        const canvas = document.createElement("canvas");
+        let width = tempImg.width;
+        let height = tempImg.height;
+        const maxDim = 900;
+
+        if (width > maxDim || height > maxDim) {
+          if (width > height) {
+            height = Math.round((height * maxDim) / width);
+            width = maxDim;
+          } else {
+            width = Math.round((width * maxDim) / height);
+            height = maxDim;
+          }
+        }
+
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(tempImg, 0, 0, width, height);
+
+        selectedGalleryDataUrl = canvas.toDataURL("image/jpeg", 0.75);
+        galleryPreviewImg.src = selectedGalleryDataUrl;
+        galleryPreviewInfo.textContent = `Optimized resolution: ${width} × ${height}px`;
+        updateGalleryPreviewText();
+        galleryPreviewBox.style.display = "block";
+      };
+      tempImg.src = evt.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ---- Firebase-backed gallery (shared with every visitor of the website) ----
+let adminGalleryPhotos = [];
+let gallerySubscribed = false;
+
+function startAdminGallerySync() {
+  if (gallerySubscribed) return;
+  const begin = () => {
+    gallerySubscribed = true;
+    window.galleryStore.subscribe(photos => {
+      adminGalleryPhotos = photos;
+      renderAdminGallery();
+    }, err => {
+      alert("⚠️ Could not load gallery from Firebase: " + err.message);
+    });
+  };
+  if (window.galleryStore) begin();
+  else window.addEventListener("galleryStoreReady", begin, { once: true });
+}
+
+// ---- Firebase Auth UI & Sync ----
+const fbSignedInBanner = document.getElementById("fbSignedInBanner");
+const fbAuthBanner = document.getElementById("fbAuthBanner");
+const fbUserEmailText = document.getElementById("fbUserEmailText");
+const fbEmailInput = document.getElementById("fbEmailInput");
+const fbPassInput = document.getElementById("fbPassInput");
+const fbSignInBtn = document.getElementById("fbSignInBtn");
+const fbSignOutBtn = document.getElementById("fbSignOutBtn");
+const fbAuthMsg = document.getElementById("fbAuthMsg");
+
+function updateFbAuthUI(user) {
+  if (user) {
+    if (fbSignedInBanner) fbSignedInBanner.style.display = "flex";
+    if (fbAuthBanner) fbAuthBanner.style.display = "none";
+    if (fbUserEmailText) fbUserEmailText.textContent = user.email || "Doctor Admin";
+  } else {
+    if (fbSignedInBanner) fbSignedInBanner.style.display = "none";
+    if (fbAuthBanner) fbAuthBanner.style.display = "block";
+  }
+}
+
+function initFbAuthListeners() {
+  if (!window.galleryStore) return;
+  window.galleryStore.onAuth(updateFbAuthUI);
+  if (window.galleryStore.authReady) {
+    window.galleryStore.authReady().then(updateFbAuthUI).catch(() => {});
+  }
+}
+if (window.galleryStore) initFbAuthListeners();
+else window.addEventListener("galleryStoreReady", initFbAuthListeners, { once: true });
+
+if (fbSignInBtn) {
+  fbSignInBtn.addEventListener("click", async () => {
+    const email = (fbEmailInput.value || "").trim();
+    const pass = fbPassInput.value || "";
+    if (!email || !pass) {
+      if (fbAuthMsg) {
+        fbAuthMsg.style.display = "block";
+        fbAuthMsg.style.color = "#dc2626";
+        fbAuthMsg.textContent = "Please enter both Firebase admin email and password.";
+      }
+      return;
+    }
+    fbSignInBtn.disabled = true;
+    fbSignInBtn.textContent = "Connecting...";
+    try {
+      await window.galleryStore.signIn(email, pass);
+      if (fbAuthMsg) fbAuthMsg.style.display = "none";
+      fbEmailInput.value = "";
+      fbPassInput.value = "";
+    } catch (err) {
+      if (fbAuthMsg) {
+        fbAuthMsg.style.display = "block";
+        fbAuthMsg.style.color = "#dc2626";
+        fbAuthMsg.textContent = "Sign-in failed: " + err.message;
+      }
+    } finally {
+      fbSignInBtn.disabled = false;
+      fbSignInBtn.textContent = "Connect Cloud";
+    }
+  });
+}
+
+if (fbSignOutBtn) {
+  fbSignOutBtn.addEventListener("click", async () => {
+    if (window.galleryStore && window.galleryStore.signOut) {
+      await window.galleryStore.signOut();
+    }
+  });
+}
+
+async function ensureFirebaseAdmin() {
+  if (!window.galleryStore) {
+    alert("Firebase is still loading. Please wait 2 seconds and try again.");
+    return false;
+  }
+  const user = window.galleryStore.authReady ? (await window.galleryStore.authReady()) : window.galleryStore.getCurrentUser();
+  if (user) return true;
+
+  const bannerEmail = (fbEmailInput && fbEmailInput.value || "").trim();
+  const bannerPass = (fbPassInput && fbPassInput.value || "");
+  if (bannerEmail && bannerPass) {
+    try {
+      await window.galleryStore.signIn(bannerEmail, bannerPass);
+      return true;
+    } catch (e) {
+      // Fallback to prompt
+    }
+  }
+
+  const email = prompt("Firebase admin email (needed to publish to website):", bannerEmail || "");
+  if (!email) return false;
+  const pass = prompt("Firebase admin password:");
+  if (!pass) return false;
+  try {
+    await window.galleryStore.signIn(email.trim(), pass);
+    return true;
+  } catch (err) {
+    alert("❌ Firebase login failed: " + err.message);
+    return false;
+  }
+}
+
+if(uploadGalleryBtn) {
+  uploadGalleryBtn.addEventListener("click", async () => {
+    const title = galleryTitle.value.trim();
+    const category = galleryCategory.value.trim() || "Clinical Photo";
+
+    if(!title) {
+      alert("Please enter a photo caption or title.");
+      galleryTitle.focus();
+      return;
+    }
+
+    if(!selectedGalleryDataUrl) {
+      alert("Please select an image file to upload.");
+      return;
+    }
+
+    if(!(await ensureFirebaseAdmin())) return;
+
+    uploadGalleryBtn.disabled = true;
+    try {
+      await window.galleryStore.add({
+        title,
+        category,
+        dataUrl: selectedGalleryDataUrl,
+        uploadedAt: new Date().toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })
+      });
+    } catch (err) {
+      alert("⚠️ Upload failed: " + err.message);
+      uploadGalleryBtn.disabled = false;
+      return;
+    }
+    uploadGalleryBtn.disabled = false;
+
+    // Reset form
+    galleryTitle.value = "";
+    galleryFileInput.value = "";
+    selectedGalleryDataUrl = null;
+    galleryPreviewBox.style.display = "none";
+
+    alert("🎉 Photo published! It is now live on the website for all visitors.");
+  });
+}
+
+function renderAdminGallery() {
+  startAdminGallerySync();
+  if(!adminGalleryGrid) return;
+  const photos = adminGalleryPhotos;
+
+  if(galleryCountBadge) galleryCountBadge.textContent = `${photos.length} Uploaded`;
+  emptyGalleryState.style.display = photos.length ? "none" : "block";
+  adminGalleryGrid.innerHTML = "";
+
+  photos.forEach(item => {
+    const card = document.createElement("div");
+    card.className = "admin-gallery-card";
+    card.innerHTML = `
+      <img src="${item.dataUrl}" alt="${escapeHtml(item.title)}" class="admin-gallery-thumb">
+      <div class="admin-gallery-body">
+        <span class="badge bg-info text-dark mb-1" style="font-size:11px;width:fit-content">${escapeHtml(item.category || "Gallery")}</span>
+        <div class="admin-gallery-caption">${escapeHtml(item.title)}</div>
+        <div class="admin-gallery-meta">
+          <span>📅 ${escapeHtml(item.uploadedAt || "")}</span>
+          <button class="btn sm deletePhotoBtn" data-id="${escapeHtml(String(item.id))}" style="background:#fee2e2;color:#b91c1c;border-color:#fecaca;padding:3px 8px;font-size:11px" title="Delete from Website">🗑️ Remove</button>
+        </div>
+      </div>
+    `;
+    adminGalleryGrid.appendChild(card);
+  });
+
+  adminGalleryGrid.querySelectorAll(".deletePhotoBtn").forEach(btn => {
+    btn.addEventListener("click", async () => {
+      if(!confirm("Are you sure you want to remove this photo from the website gallery?")) return;
+      if(!(await ensureFirebaseAdmin())) return;
+      try {
+        await window.galleryStore.remove(btn.dataset.id);
+      } catch (err) {
+        alert("⚠️ Delete failed: " + err.message);
+      }
+    });
+  });
+}
+
+checkLogin();
+</script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+</body>
+</html>
